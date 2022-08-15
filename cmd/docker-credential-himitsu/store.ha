@@ -18,5 +18,5 @@ fn store(hi: net::socket) void = {
 			query::pair { key = "secret", value = secret, private = true, optional = false},
 		],
 	};
-	client::query(hi, client::operation::ADD, &query, 0)!;
+	client::next(&client::query(hi, client::operation::ADD, &query, 0)!)!;
 };

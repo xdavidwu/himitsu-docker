@@ -15,5 +15,5 @@ fn erase(hi: net::socket) void = {
 			query::pair { key = "secret", value = "", private = true, optional = false},
 		],
 	};
-	client::query(hi, client::operation::DEL, &query, 0)!;
+	client::next(&client::query(hi, client::operation::DEL, &query, 0)!)!;
 };
