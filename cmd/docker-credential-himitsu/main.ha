@@ -5,6 +5,8 @@ export fn main() void = {
 	switch (os::args[1]) {
 	case "store" =>
 		store();
+	case "get" =>
+		get();
 	case "list" =>
 		list();
 	case =>
