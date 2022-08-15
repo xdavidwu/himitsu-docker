@@ -1,10 +1,12 @@
 use encoding::json;
 use himitsu::client;
 use himitsu::query;
+use net;
 use os;
 
 fn store() void = {
 	const hi = client::connect()!;
+	defer net::close(hi)!;
 	const json = json::load(os::stdin)! as json::object;
 	defer json::finish(json);
 	const url = *(json::get(&json, "ServerURL") as *json::value) as str;

@@ -1,12 +1,14 @@
 use encoding::json;
 use himitsu::client;
 use himitsu::query;
+use net;
 use os;
 use shlex;
 use strings;
 
 fn list() void = {
 	const hi = client::connect()!;
+	defer net::close(hi)!;
 	const query = query::query {
 		items = [
 			query::pair { key = "proto", value = "docker", private = false, optional = false},

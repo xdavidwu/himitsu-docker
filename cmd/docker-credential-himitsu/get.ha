@@ -1,14 +1,15 @@
 use bufio;
 use encoding::json;
-use fmt;
 use himitsu::client;
 use himitsu::query;
+use net;
 use os;
 use shlex;
 use strings;
 
 fn get() void = {
 	const hi = client::connect()!;
+	defer net::close(hi)!;
 	const url = strings::fromutf8(bufio::scanline(os::stdin)! as []u8);
 	const query = query::query {
 		items = [
