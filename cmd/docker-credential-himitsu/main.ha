@@ -7,6 +7,8 @@ export fn main() void = {
 		store();
 	case "get" =>
 		get();
+	case "erase" =>
+		erase();
 	case "list" =>
 		list();
 	case =>
