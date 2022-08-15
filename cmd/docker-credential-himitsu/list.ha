@@ -6,9 +6,7 @@ use os;
 use shlex;
 use strings;
 
-fn list() void = {
-	const hi = client::connect()!;
-	defer net::close(hi)!;
+fn list(hi: net::socket) void = {
 	const query = query::query {
 		items = [
 			query::pair { key = "proto", value = "docker", private = false, optional = false},

@@ -5,9 +5,7 @@ use net;
 use os;
 use strings;
 
-fn erase() void = {
-	const hi = client::connect()!;
-	defer net::close(hi)!;
+fn erase(hi: net::socket) void = {
 	const url = strings::fromutf8(bufio::scanline(os::stdin)! as []u8);
 	const query = query::query {
 		items = [
