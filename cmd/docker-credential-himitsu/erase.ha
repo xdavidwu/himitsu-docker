@@ -6,7 +6,7 @@ use os;
 use strings;
 
 fn erase(hi: net::socket) void = {
-	const url = strings::fromutf8(bufio::scanline(os::stdin)! as []u8);
+	const url = strings::fromutf8(bufio::scanline(os::stdin)! as []u8)!;
 	const query = query::query {
 		items = [
 			query::pair { key = "proto", value = "docker", private = false, optional = false},
