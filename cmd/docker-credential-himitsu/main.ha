@@ -26,7 +26,6 @@ export fn main() void = {
 	case "list" =>
 		list(sock);
 	case =>
-		net::close(sock)!;
 		fmt::fatalf("Usage: {} <store|get|erase|list>", os::args[0]);
 	};
 };
