@@ -20,27 +20,26 @@ fn get(hi: net::socket) void = {
 	const iter = client::query(hi, client::operation::QUERY, &query, client::flags::DECRYPT)!;
 	const json = json::newobject();
 	defer json::finish(json);
-	json::set(&json, "SeverURL", url);
-	json::set(&json, "Username", "");
-	json::set(&json, "Secret", "");
-	match (client::next(&iter)!) {
+	const res = match (client::next(&iter)!) {
 	case void =>
-		yield;
+		return;
 	case let s: const str =>
-		const parts = shlex::split(s)!;
-		defer strings::freeall(parts);
-		const query = query::parse_items(parts)!;
-		defer query::finish(&query);
-		let secreti = 0z, usernamei = 0z;
-		for (let i = 0z; i < len(query.items); i += 1) {
-			if (strings::compare(query.items[i].key, "secret") == 0) {
-				secreti = i;
-			} else if (strings::compare(query.items[i].key, "username") == 0) {
-				usernamei = i;
-			};
-		};
-		json::set(&json, "Username", query.items[usernamei].value);
-		json::set(&json, "Secret", query.items[secreti].value);
+		yield s;
 	};
+	const parts = shlex::split(res)!;
+	defer strings::freeall(parts);
+	const query = query::parse_items(parts)!;
+	defer query::finish(&query);
+	let secreti = 0z, usernamei = 0z;
+	for (let i = 0z; i < len(query.items); i += 1) {
+		if (strings::compare(query.items[i].key, "secret") == 0) {
+			secreti = i;
+		} else if (strings::compare(query.items[i].key, "username") == 0) {
+			usernamei = i;
+		};
+	};
+	json::set(&json, "SeverURL", url);
+	json::set(&json, "Username", query.items[usernamei].value);
+	json::set(&json, "Secret", query.items[secreti].value);
 	json::dump(os::stdout, json)!;
 };
