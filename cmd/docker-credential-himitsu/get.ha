@@ -1,5 +1,6 @@
 use bufio;
 use encoding::json;
+use fmt;
 use himitsu::client;
 use himitsu::query;
 use net;
@@ -22,7 +23,10 @@ fn get(hi: net::socket) void = {
 	defer json::finish(json);
 	const res = match (client::next(&iter)!) {
 	case void =>
-		return;
+		// see go github.com/docker/docker-credential-helpers/client
+		// client.go
+		fmt::println("credentials not found in native keychain")!;
+		os::exit(255);
 	case let s: const str =>
 		yield s;
 	};
