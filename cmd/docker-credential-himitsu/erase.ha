@@ -3,10 +3,11 @@ use himitsu::client;
 use himitsu::query;
 use net;
 use os;
-use strings;
 
 fn erase(hi: net::socket) void = {
-	const url = strings::fromutf8(bufio::scanline(os::stdin)! as []u8)!;
+	const scanner = bufio::newscanner(os::stdin, os::BUFSZ);
+	defer bufio::finish(&scanner);
+	const url = bufio::scan_line(&scanner)! as const str;
 	const query = query::query {
 		items = [
 			query::pair { key = "proto", value = "docker", private = false, optional = false},
