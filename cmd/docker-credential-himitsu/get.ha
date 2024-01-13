@@ -23,18 +23,15 @@ fn get(hi: net::socket) void = {
 	const iter = client::query(hi, client::operation::QUERY, &query, client::flags::DECRYPT)!;
 	const json = json::newobject();
 	defer json::finish(json);
-	const res = match (client::next(&iter)!) {
+	const query = match (client::next(&iter)!) {
 	case void =>
 		// see go github.com/docker/docker-credential-helpers/client
 		// client.go
 		fmt::println("credentials not found in native keychain")!;
 		os::exit(255);
-	case let s: const str =>
-		yield s;
+	case let q: query::query =>
+		yield q;
 	};
-	const parts = shlex::split(res)!;
-	defer strings::freeall(parts);
-	const query = query::parse_items(parts)!;
 	defer query::finish(&query);
 	let secreti = 0z, usernamei = 0z;
 	for (let i = 0z; i < len(query.items); i += 1) {
