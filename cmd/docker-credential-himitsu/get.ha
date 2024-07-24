@@ -24,7 +24,7 @@ fn get(hi: net::socket) void = {
 	const json = json::newobject();
 	defer json::finish(json);
 	const query = match (client::next(&iter)!) {
-	case void =>
+	case done =>
 		// see go github.com/docker/docker-credential-helpers/client
 		// client.go
 		fmt::println("credentials not found in native keychain")!;

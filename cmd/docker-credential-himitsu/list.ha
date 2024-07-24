@@ -18,13 +18,7 @@ fn list(hi: net::socket) void = {
 	const iter = client::query(hi, client::operation::QUERY, &query, 0)!;
 	const json = json::newobject();
 	defer json::finish(json);
-	for (true) {
-		const query = match (client::next(&iter)!) {
-		case void =>
-			break;
-		case let q: query::query =>
-			yield q;
-		};
+	for (const query => client::next(&iter)!) {
 		defer query::finish(&query);
 		let hosti = 0z, usernamei = 0z;
 		for (let i = 0z; i < len(query.items); i += 1) {
