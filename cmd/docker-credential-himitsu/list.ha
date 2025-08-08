@@ -14,6 +14,7 @@ fn list(hi: net::socket) void = {
 			query::pair { key = "username", value = "", private = false, optional = false},
 			query::pair { key = "secret", value = "", private = true, optional = false},
 		],
+		strict = false,
 	};
 	const iter = client::query(hi, client::operation::QUERY, &query, 0)!;
 	const json = json::newobject();
@@ -28,7 +29,7 @@ fn list(hi: net::socket) void = {
 				usernamei = i;
 			};
 		};
-		json::set(&json, query.items[hosti].value, query.items[usernamei].value);
+		json::set(&json, query.items[hosti].value, query.items[usernamei].value)!;
 	};
 	json::dump(os::stdout, json)!;
 };
