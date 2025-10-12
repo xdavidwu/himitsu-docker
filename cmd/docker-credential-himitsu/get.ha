@@ -9,7 +9,7 @@ use shlex;
 use strings;
 
 fn get(hi: net::socket) void = {
-	const scanner = bufio::newscanner(os::stdin, os::BUFSZ);
+	const scanner = bufio::newscanner(os::stdin, os::BUFSZ, bufio::scan_options::EOF_GREEDY);
 	defer bufio::finish(&scanner);
 	const url = bufio::scan_line(&scanner)! as const str;
 	const query = query::query {
