@@ -1,7 +1,10 @@
 use encoding::json;
 use himitsu::client;
 use himitsu::query;
+use io;
+use memio;
 use net;
+use net::unix;
 use os;
 use shlex;
 use strings;
@@ -32,4 +35,14 @@ fn list(hi: net::socket) void = {
 		json::set(&json, query.items[hosti].value, query.items[usernamei].value)!;
 	};
 	json::dump(os::stdout, json)!;
+};
+
+@test fn list() void = {
+	const (s1, s2) = unix::socketpair(0)!;
+	defer net::close(s1)!;
+	defer net::close(s2)!;
+
+	io::write(s2, strings::toutf8("key proto=docker host=example.org username=foo secret\nend\n"))!;
+	list(s1);
+	assert(strings::fromutf8(memio::buffer(os::stdout: *memio::stream))! == "{\"example.org\":\"foo\"}");
 };
