@@ -42,7 +42,7 @@ fn get(hi: net::socket) void = {
 			usernamei = i;
 		};
 	};
-	json::set(&json, "SeverURL", url)!;
+	json::set(&json, "ServerURL", url)!;
 	json::set(&json, "Username", query.items[usernamei].value)!;
 	json::set(&json, "Secret", query.items[secreti].value)!;
 	json::dump(os::stdout, json)!;
