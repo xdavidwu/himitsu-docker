@@ -3,7 +3,10 @@ use encoding::json;
 use fmt;
 use himitsu::client;
 use himitsu::query;
+use io;
 use net;
+use net::unix;
+use memio;
 use os;
 use shlex;
 use strings;
@@ -46,4 +49,18 @@ fn get(hi: net::socket) void = {
 	json::set(&json, "Username", query.items[usernamei].value)!;
 	json::set(&json, "Secret", query.items[secreti].value)!;
 	json::dump(os::stdout, json)!;
+};
+
+@test fn get() void = {
+	const (s1, s2) = unix::socketpair()!;
+	defer net::close(s1)!;
+	defer net::close(s2)!;
+
+	const orig_stdin = os::stdin;
+	os::stdin = &memio::fixed(strings::toutf8("example.org"));
+	defer os::stdin = orig_stdin;
+
+	io::write(s2, strings::toutf8("key proto=docker host=example.org username=foo secret!=password\nend\n"))!;
+	get(s1);
+	assert(strings::fromutf8(memio::buffer(os::stdout: *memio::stream))! == "{\"Secret\":\"password\",\"Username\":\"foo\",\"ServerURL\":\"example.org\"}");
 };
