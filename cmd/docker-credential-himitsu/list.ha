@@ -38,11 +38,13 @@ fn list(hi: net::socket) void = {
 };
 
 @test fn list() void = {
-	const (s1, s2) = unix::socketpair(0)!;
+	const (s1, s2) = unix::socketpair()!;
 	defer net::close(s1)!;
 	defer net::close(s2)!;
 
 	io::write(s2, strings::toutf8("key proto=docker host=example.org username=foo secret\nend\n"))!;
 	list(s1);
+
+	// TODO parse json
 	assert(strings::fromutf8(memio::buffer(os::stdout: *memio::stream))! == "{\"example.org\":\"foo\"}");
 };

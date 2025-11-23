@@ -62,5 +62,7 @@ fn get(hi: net::socket) void = {
 
 	io::write(s2, strings::toutf8("key proto=docker host=example.org username=foo secret!=password\nend\n"))!;
 	get(s1);
+
+	// TODO parse json
 	assert(strings::fromutf8(memio::buffer(os::stdout: *memio::stream))! == "{\"Secret\":\"password\",\"Username\":\"foo\",\"ServerURL\":\"example.org\"}");
 };
