@@ -1,6 +1,8 @@
 use himitsu::client;
 use himitsu::query;
 
+def DUP_ERROR = "The keystore does not allow duplicate entries";
+
 fn build_query(url: str, username: str, secret: str) (query::query | nomem) = {
 	const q = query::query {
 		items = [

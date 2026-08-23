@@ -3,6 +3,7 @@ use himitsu::client;
 use himitsu::query;
 use net;
 use os;
+use strings;
 
 fn store(hi: net::socket) void = {
 	const json = json::load(os::stdin)! as json::object;
@@ -13,5 +14,19 @@ fn store(hi: net::socket) void = {
 
 	const query = build_query(url, username, secret)!;
 	defer query::finish(&query);
-	drain_query(&client::query(hi, client::operation::ADD, &query, 0)!)!;
+
+	(match (drain_query(&client::query(hi, client::operation::ADD, &query, 0)!)) {
+	case let e: client::hierror =>
+		if (strings::compare(e, DUP_ERROR) == 0) {
+			const public_query = query::dup_pub(&query)!;
+			defer query::finish(&public_query);
+			drain_query(&client::update(hi, &public_query, &query, 0)!)!;
+			return;
+		};
+		yield e;
+	case let e: client::error =>
+		yield e;
+	case void =>
+		yield;
+	})!;
 };
