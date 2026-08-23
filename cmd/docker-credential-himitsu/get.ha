@@ -15,18 +15,14 @@ fn get(hi: net::socket) void = {
 	const scanner = bufio::newscanner(os::stdin, os::BUFSZ, bufio::scan_options::EOF_GREEDY);
 	defer bufio::finish(&scanner);
 	const url = bufio::scan_line(&scanner)! as const str;
-	const query = query::query {
-		items = [
-			query::pair { key = "proto", value = "docker", private = false, optional = false},
-			query::pair { key = "host", value = url, private = false, optional = false},
-			query::pair { key = "username", value = "", private = false, optional = false},
-			query::pair { key = "secret", value = "", private = true, optional = false},
-		],
-		strict = false,
-	};
+
+	const query = build_query(url, "", "")!;
+	defer query::finish(&query);
 	const iter = client::query(hi, client::operation::QUERY, &query, client::flags::DECRYPT)!;
+
 	const json = json::newobject();
 	defer json::finish(json);
+
 	const query = match (client::next(&iter)!) {
 	case done =>
 		// see go github.com/docker/docker-credential-helpers/client
@@ -37,6 +33,7 @@ fn get(hi: net::socket) void = {
 		yield q;
 	};
 	defer query::finish(&query);
+
 	let secreti = 0z, usernamei = 0z;
 	for (let i = 0z; i < len(query.items); i += 1) {
 		if (strings::compare(query.items[i].key, "secret") == 0) {

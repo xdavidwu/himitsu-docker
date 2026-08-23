@@ -10,15 +10,9 @@ use shlex;
 use strings;
 
 fn list(hi: net::socket) void = {
-	const query = query::query {
-		items = [
-			query::pair { key = "proto", value = "docker", private = false, optional = false},
-			query::pair { key = "host", value = "", private = false, optional = false},
-			query::pair { key = "username", value = "", private = false, optional = false},
-			query::pair { key = "secret", value = "", private = true, optional = false},
-		],
-		strict = false,
-	};
+	const query = build_query("", "", "")!;
+	defer query::finish(&query);
+
 	const iter = client::query(hi, client::operation::QUERY, &query, 0)!;
 	const json = json::newobject();
 	defer json::finish(json);
