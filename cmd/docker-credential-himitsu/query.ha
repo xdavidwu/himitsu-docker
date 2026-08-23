@@ -1,3 +1,4 @@
+use himitsu::client;
 use himitsu::query;
 
 fn build_query(url: str, username: str, secret: str) (query::query | nomem) = {
@@ -11,4 +12,23 @@ fn build_query(url: str, username: str, secret: str) (query::query | nomem) = {
 		strict = false,
 	};
 	return query::dup(&q);
+};
+
+fn drain_query(iter: *client::keyiter) (void | client::error) = {
+	for (const query => client::next(iter)?) {
+		query::finish(&query);
+	};
+};
+
+fn first_query(iter: *client::keyiter) (query::query | done | client::error) = {
+	const first = match (client::next(iter)?) {
+	case done =>
+		return done;
+	case let q: query::query =>
+		yield q;
+	};
+
+	drain_query(iter)?;
+
+	return first;
 };

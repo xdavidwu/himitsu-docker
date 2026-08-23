@@ -11,5 +11,5 @@ fn erase(hi: net::socket) void = {
 
 	const query = build_query(url, "", "")!;
 	defer query::finish(&query);
-	client::next(&client::query(hi, client::operation::DEL, &query, 0)!)!;
+	drain_query(&client::query(hi, client::operation::DEL, &query, 0)!)!;
 };

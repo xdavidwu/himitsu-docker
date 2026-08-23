@@ -13,5 +13,5 @@ fn store(hi: net::socket) void = {
 
 	const query = build_query(url, username, secret)!;
 	defer query::finish(&query);
-	client::next(&client::query(hi, client::operation::ADD, &query, 0)!)!;
+	drain_query(&client::query(hi, client::operation::ADD, &query, 0)!)!;
 };

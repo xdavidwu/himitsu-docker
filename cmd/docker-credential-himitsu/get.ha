@@ -23,7 +23,7 @@ fn get(hi: net::socket) void = {
 	const json = json::newobject();
 	defer json::finish(json);
 
-	const query = match (client::next(&iter)!) {
+	const query = match (first_query(&iter)!) {
 	case done =>
 		// see go github.com/docker/docker-credential-helpers/client
 		// client.go
